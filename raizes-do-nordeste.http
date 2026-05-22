@@ -1,0 +1,6 @@
+@raizes_do_nordeste_HostAddress = http://localhost:5205
+
+GET {{raizes_do_nordeste_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
