@@ -7,7 +7,7 @@ using System.Text;
 
 namespace raizes_do_nordeste.Services
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
 
@@ -16,7 +16,6 @@ namespace raizes_do_nordeste.Services
             _configuration = configuration;
         }
 
-        // 1. Gera o Access Token (JWT de 15 minutos)
         public string GerarAccessToken(Usuario usuario)
         {
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
@@ -26,14 +25,14 @@ namespace raizes_do_nordeste.Services
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuario.Nome),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Perfil.ToString()), // Usa o seu Enum de Perfil
+                new Claim(ClaimTypes.Role, usuario.Perfil.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(15), // Vida curta!
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(
@@ -45,7 +44,6 @@ namespace raizes_do_nordeste.Services
             return tokenHandler.WriteToken(token);
         }
 
-        // 2. Gera o Refresh Token (String aleatória e segura)
         public string GerarRefreshToken()
         {
             var randomNumber = new byte[64];
@@ -54,7 +52,6 @@ namespace raizes_do_nordeste.Services
             return Convert.ToBase64String(randomNumber);
         }
 
-        // 3. Extrai as informações de um JWT que já expirou
         public ClaimsPrincipal ObterPrincipalDoTokenExpirado(string token)
         {
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
@@ -65,7 +62,7 @@ namespace raizes_do_nordeste.Services
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateLifetime = false // Dizemos para o .NET não dar erro se estiver expirado
+                ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
