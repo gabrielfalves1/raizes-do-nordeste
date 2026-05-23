@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using raizes_do_nordeste.Entities;
+using raizes_do_nordeste.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -70,7 +71,7 @@ namespace raizes_do_nordeste.Services
             var jwtSecurityToken = securityToken as JwtSecurityToken;
 
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Token inválido");
+                throw new RegraNegocioException("Token de acesso inválido ou mal formatado.");
 
             return principal;
         }

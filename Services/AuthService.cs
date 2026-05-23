@@ -3,6 +3,7 @@ using raizes_do_nordeste.Data;
 using raizes_do_nordeste.DTOs;
 using raizes_do_nordeste.Entities;
 using raizes_do_nordeste.Enums;
+using raizes_do_nordeste.Exceptions;
 
 namespace raizes_do_nordeste.Services
 {
@@ -20,8 +21,9 @@ namespace raizes_do_nordeste.Services
         public async Task<AuthResult> RegistrarAsync(RegisterRequest request)
         {
             var emailExistente = await _context.Usuarios.AnyAsync(u => u.Email == request.Email);
+
             if (emailExistente)
-                return new AuthResult { Sucesso = false, Mensagem = "Este e-mail já está cadastrado no sistema." };
+                throw new RegraNegocioException("Este e-mail já está cadastrado no sistema.");
 
             string senhaCriptografada = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 
@@ -47,10 +49,10 @@ namespace raizes_do_nordeste.Services
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (usuario == null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
-                return new AuthResult { Sucesso = false, Mensagem = "E-mail ou senha incorretos." };
+                throw new RegraNegocioException("E-mail ou senha incorretos.");
 
             if (usuario.Status != Status.Ativo)
-                return new AuthResult { Sucesso = false, Mensagem = "Esta conta de usuário está inativa ou bloqueada." };
+                throw new RegraNegocioException("Esta conta de usuário está inativa ou bloqueada.");
 
             return await GerarESalvarTokensAsync(usuario, ipAddress);
         }
@@ -67,7 +69,7 @@ namespace raizes_do_nordeste.Services
             if (refreshTokenSalvo == null || refreshTokenSalvo.Revogado ||
                 refreshTokenSalvo.DataExpiracao <= DateTime.UtcNow || refreshTokenSalvo.Usuario.Email != emailUsuario)
             {
-                return new AuthResult { Sucesso = false, Mensagem = "Requisição de renovação inválida. Faça login novamente." };
+                throw new RegraNegocioException("Requisição de renovação inválida. Faça login novamente.");
             }
 
             refreshTokenSalvo.Revogado = true;

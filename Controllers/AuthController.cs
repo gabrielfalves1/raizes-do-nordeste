@@ -22,9 +22,6 @@ namespace raizes_do_nordeste.Controllers
         {
             var resultado = await _authService.RegistrarAsync(request);
 
-            if (!resultado.Sucesso)
-                return BadRequest(new { mensagem = resultado.Mensagem });
-
             return StatusCode(StatusCodes.Status201Created, new { mensagem = resultado.Mensagem });
         }
 
@@ -35,9 +32,6 @@ namespace raizes_do_nordeste.Controllers
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "IP Desconhecido";
 
             var resultado = await _authService.LoginAsync(request, ipAddress);
-
-            if (!resultado.Sucesso)
-                return Unauthorized(new { mensagem = resultado.Mensagem });
 
             return Ok(new
             {
@@ -53,9 +47,6 @@ namespace raizes_do_nordeste.Controllers
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "IP Desconhecido";
 
             var resultado = await _authService.RefreshAsync(request, ipAddress);
-
-            if (!resultado.Sucesso)
-                return BadRequest(new { mensagem = resultado.Mensagem });
 
             return Ok(new
             {
