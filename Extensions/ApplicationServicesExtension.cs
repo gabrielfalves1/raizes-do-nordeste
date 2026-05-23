@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using raizes_do_nordeste.Data;
+using raizes_do_nordeste.Middlewares;
 using raizes_do_nordeste.Services;
 
 namespace raizes_do_nordeste.Extensions
@@ -13,6 +14,9 @@ namespace raizes_do_nordeste.Extensions
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddProblemDetails();
 
             return services;
         }
