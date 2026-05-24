@@ -8,6 +8,7 @@ namespace raizes_do_nordeste.Data
     {
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Unidade> Unidades { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

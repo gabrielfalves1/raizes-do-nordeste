@@ -34,8 +34,8 @@ namespace raizes_do_nordeste.Services
                 SenhaHash = senhaCriptografada,
                 Telefone = request.Telefone,
                 DataCadastro = DateTime.UtcNow,
-                Status = Status.Ativo,
-                Perfil = Perfil.Cliente
+                Status = StatusEnum.Ativo,
+                Perfil = PerfilEnum.Cliente
             };
 
             _context.Usuarios.Add(novoUsuario);
@@ -51,7 +51,7 @@ namespace raizes_do_nordeste.Services
             if (usuario == null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
                 throw new RegraNegocioException("E-mail ou senha incorretos.");
 
-            if (usuario.Status != Status.Ativo)
+            if (usuario.Status != StatusEnum.Ativo)
                 throw new RegraNegocioException("Esta conta de usuário está inativa ou bloqueada.");
 
             return await GerarESalvarTokensAsync(usuario, ipAddress);

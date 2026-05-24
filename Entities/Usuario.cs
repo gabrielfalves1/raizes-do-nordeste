@@ -9,9 +9,9 @@ namespace raizes_do_nordeste.Entities
         public string Email { get; set; } = string.Empty;
         public string SenhaHash { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
-        public Perfil Perfil { get; set; }
+        public PerfilEnum Perfil { get; set; }
         public DateTime DataCadastro { get; set; }
-        public Status Status { get; set; }
+        public StatusEnum Status { get; set; }
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

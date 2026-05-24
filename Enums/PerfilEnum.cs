@@ -1,6 +1,6 @@
 ﻿namespace raizes_do_nordeste.Enums
 {
-    public enum Perfil
+    public enum PerfilEnum
     {
         Cliente,
         Atendente,
