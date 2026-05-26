@@ -2,8 +2,6 @@
 
 ## Variáveis de ambiente
 
-Este projeto agora carrega um arquivo `.env` na inicialização e também aceita variáveis de ambiente normais do sistema.
-
 Crie um arquivo `.env` na raiz do projeto com base em `.env.example`:
 
 ```env
@@ -13,8 +11,5 @@ Jwt__Issuer=SuaApi
 Jwt__Audience=SeusClientes
 ```
 
-Regras importantes:
-
-- `ConnectionStrings__DefaultConnection` substitui `ConnectionStrings:DefaultConnection`
-- `Jwt__Key`, `Jwt__Issuer` e `Jwt__Audience` substituem `Jwt:Key`, `Jwt:Issuer` e `Jwt:Audience`
+Regra importante:
 - O arquivo `.env` não deve ser versionado
