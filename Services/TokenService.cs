@@ -19,7 +19,7 @@ namespace raizes_do_nordeste.Services
 
         public string GerarAccessToken(Usuario usuario)
         {
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+            var key = Encoding.ASCII.GetBytes(GetRequiredJwtValue("Key"));
 
             var claims = new[]
             {
@@ -34,8 +34,8 @@ namespace raizes_do_nordeste.Services
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(15),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
+                Issuer = GetRequiredJwtValue("Issuer"),
+                Audience = GetRequiredJwtValue("Audience"),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -55,7 +55,7 @@ namespace raizes_do_nordeste.Services
 
         public ClaimsPrincipal ObterPrincipalDoTokenExpirado(string token)
         {
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+            var key = Encoding.ASCII.GetBytes(GetRequiredJwtValue("Key"));
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -74,6 +74,12 @@ namespace raizes_do_nordeste.Services
                 throw new RegraNegocioException("Token de acesso inválido ou mal formatado.");
 
             return principal;
+        }
+
+        private string GetRequiredJwtValue(string key)
+        {
+            return _configuration[$"Jwt:{key}"]
+                ?? throw new InvalidOperationException($"A variável de ambiente 'Jwt__{key}' não foi definida.");
         }
     }
 }

@@ -1,5 +1,7 @@
 using raizes_do_nordeste.Extensions;
 
+DotEnvLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
+
 var builder = WebApplication.CreateBuilder(args);
 
 

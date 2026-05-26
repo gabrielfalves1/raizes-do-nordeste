@@ -9,7 +9,10 @@ namespace raizes_do_nordeste.Extensions
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
         {
             var jwtSettings = config.GetSection("Jwt");
-            var secretKey = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+            var key = jwtSettings["Key"] ?? throw new InvalidOperationException("A variável de ambiente 'Jwt__Key' não foi definida.");
+            var issuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("A variável de ambiente 'Jwt__Issuer' não foi definida.");
+            var audience = jwtSettings["Audience"] ?? throw new InvalidOperationException("A variável de ambiente 'Jwt__Audience' não foi definida.");
+            var secretKey = Encoding.ASCII.GetBytes(key);
 
             services.AddAuthentication(options =>
             {
@@ -25,9 +28,9 @@ namespace raizes_do_nordeste.Extensions
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(secretKey),
                     ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidIssuer = issuer,
                     ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
+                    ValidAudience = audience,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
