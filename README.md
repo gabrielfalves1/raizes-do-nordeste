@@ -1,11 +1,11 @@
 🔒 Variáveis de Ambiente e Configuração
+
 A API utiliza um sistema desacoplado de gerenciamento de configurações que lê credenciais diretamente de um arquivo externo de ambiente.
 
 Na raiz do projeto, crie um arquivo chamado .env (utilize o arquivo .env.example presente no repositório como referência).
 
 Preencha as propriedades com as credenciais do seu servidor SQL local e com uma chave secreta forte para criptografia dos tokens JWT:
 
-Snippet de código
 ConnectionStrings__DefaultConnection=Server=SEU_SERVIDOR\\SQLEXPRESS;Database=RaizesDoNordeste;User Id=SEU_USUARIO;Password=SUA_SENHA;TrustServerCertificate=True;MultipleActiveResultSets=true
 Jwt__Key=COLOQUE_UMA_CHAVE_LONGA_E_ALEATORIA_AQUI_DE_PELO_MENOS_256_BITS
 Jwt__Issuer=SuaApi
@@ -19,15 +19,13 @@ Siga as instruções abaixo no terminal de comandos do seu sistema operacional n
 O projeto utiliza Fluent API Data Seeding configurado diretamente nas classes de mapeamento relacional. Ao aplicar as migrations, o banco será criado automaticamente e populado com uma Categoria Padrão (Pratos Regionais), duas Unidades Ativas (Boa Viagem e Riomar) e dois Produtos Regionais (Cuscuz com Charque e Tapioca de Carne de Sol) com IDs (GUIDs) pré-definidos e estáticos para facilitar a validação ponta a ponta.
 
 Gere e aplique o esquema estrutural rodando:
-
-Bash
 dotnet ef migrations add InicialEDataSeeding
 dotnet ef database update
+
 2. Iniciar a API Localmente
 Execute o servidor embutido do Kestrel para escutar as requisições:
-
-Bash
 dotnet run
+
 O console exibirá as portas ativas, tipicamente acessíveis em http://localhost:5205 ou similar.
 
 📖 Documentação Interativa da API (Swagger UI)
