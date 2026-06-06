@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using raizes_do_nordeste.Exceptions;
 
 namespace raizes_do_nordeste.Middlewares
@@ -20,27 +19,31 @@ namespace raizes_do_nordeste.Middlewares
         {
             _logger.LogError(exception, "Uma exceção foi capturada: {Message}", exception.Message);
 
-            var problemDetails = new ProblemDetails
-            {
-                Instance = httpContext.Request.Path
-            };
+            int statusCode = StatusCodes.Status500InternalServerError;
+            string errorName = "ERRO_INTERNO";
+            string errorMessage = "Ocorreu um erro inesperado. Tente novamente mais tarde.";
 
             if (exception is RegraNegocioException)
             {
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                problemDetails.Title = "Erro de Validação";
-                problemDetails.Status = StatusCodes.Status400BadRequest;
-                problemDetails.Detail = exception.Message;
-            }
-            else
-            {
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                problemDetails.Title = "Erro Interno no Servidor";
-                problemDetails.Status = StatusCodes.Status500InternalServerError;
-                problemDetails.Detail = "Ocorreu um erro inesperado. Tente novamente mais tarde.";
+                statusCode = StatusCodes.Status400BadRequest;
+                errorName = "REGRA_DE_NEGOCIO";
+                errorMessage = exception.Message;
             }
 
-            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            httpContext.Response.StatusCode = statusCode;
+            httpContext.Response.ContentType = "application/json";
+
+            var errorResponse = new
+            {
+                error = errorName,
+                message = errorMessage,
+                details = Array.Empty<object>(), 
+                timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                path = httpContext.Request.Path.Value,
+                requestId = httpContext.TraceIdentifier 
+            };
+
+            await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
 
             return true;
         }

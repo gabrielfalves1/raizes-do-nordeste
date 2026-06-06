@@ -17,6 +17,8 @@ namespace raizes_do_nordeste.Extensions
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IPedidoService, PedidoService>();
+            services.AddScoped<IPagamentoService, PagamentoService>();
 
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
